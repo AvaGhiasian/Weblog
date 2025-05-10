@@ -1,0 +1,23 @@
+{% extends 'parent/base.html' %}
+{% load blog_tags %}
+
+{% block title %}post list{% endblock %}
+
+{% block content %}
+    <h2>آمار</h2>
+    <p> تعداد پست: {% total_posts %}</p>
+    <p> تعداد کامنت ها: {% total_comments %}</p>
+    <p> تاریخ آخرین پست: {% latest_post_date %}</p>
+
+    {% latest_posts %}
+
+    <h2>پست ها با بیشترین کامنت</h2>
+    {% most_commented_posts as pop_posts %}
+    {% for post in pop_posts %}
+        <ul>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}: with {{ post.comment_count }}
+                comment{{ post.comment_count|pluralize }}</a>
+        </ul>
+
+    {% endfor %}
+{% endblock %}
