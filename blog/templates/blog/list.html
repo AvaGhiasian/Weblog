@@ -13,6 +13,7 @@
                     <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                 </h3>
                 <P class="desc">{{ post.description | truncatewords:10 }}</P>
+                <img src="{{ post.images.first.image_file.url }}" alt="{{ post.images.first.title }}">
             </li>
         {% endfor %}
     </ol>
