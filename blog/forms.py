@@ -49,3 +49,6 @@ class CommentForm(forms.ModelForm):
             else:
                 return name
 
+
+class SearchForm(forms.Form):
+    query = forms.CharField()

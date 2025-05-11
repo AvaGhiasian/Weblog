@@ -83,7 +83,6 @@ def post_comment(request, pk):
     post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
     comment = None
     form = CommentForm(data=request.POST)
-    print("++++")
     if form.is_valid:
         # .save() can be used bcs ModelForm is used
         # commit = False: do not apply changes to DB
@@ -99,3 +98,19 @@ def post_comment(request, pk):
     }
     return render(request, "forms/comment.html", context)
 
+
+def post_search(request):
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(data=request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            # results = Post.published.filter(description__contains=query)
+            results = Post.published.filter(title__icontains=query, description__icontains=query)
+
+    context = {
+        'query': query,
+        'results': results,
+    }
+    return render(request, "blog/search.html", context)

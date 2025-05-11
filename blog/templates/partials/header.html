@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<form method="get" action="{% url 'blog:post_search' %}">
+    {% csrf_token %}
+    <input type="text" name="query" required placeholder="کلمه مورد نظر را وارد کنید">
+    <input type="submit" value="جستجو">
+</form>
