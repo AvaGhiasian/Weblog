@@ -109,10 +109,13 @@ def post_search(request):
         if form.is_valid():
             query = form.cleaned_data['query']
             search_query = SearchQuery(query)
+            search_vector = SearchVector('title', weight="A") + SearchVector('description', weight="B")
             # results = Post.published.filter(description__contains=query)
             # results = Post.published.filter(Q(title__icontains=query) | Q(description__icontains=query))
             # results = Post.published.annotate(search=SearchVector('title', 'description')).filter(search=query)
-            results = Post.published.annotate(search=SearchVector('title', 'description')).filter(search=query)
+            results = Post.published.annotate(search=search_vector,
+                                              rank=SearchRank(search_vector, search_query)).filter(
+                search=search_query).order_by('-rank')
 
     context = {
         'query': query,
