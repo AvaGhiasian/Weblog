@@ -4,7 +4,7 @@ from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
 from django.db.models import Q
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 
 from .models import *
 from .forms import *
@@ -108,14 +108,19 @@ def post_search(request):
         form = SearchForm(data=request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            search_query = SearchQuery(query)
-            search_vector = SearchVector('title', weight="A") + SearchVector('description', weight="B")
+            # search_query = SearchQuery(query)
+            # search_vector = SearchVector('title', weight="A") + SearchVector('description', weight="B")
             # results = Post.published.filter(description__contains=query)
             # results = Post.published.filter(Q(title__icontains=query) | Q(description__icontains=query))
             # results = Post.published.annotate(search=SearchVector('title', 'description')).filter(search=query)
-            results = Post.published.annotate(search=search_vector,
-                                              rank=SearchRank(search_vector, search_query)).filter(
-                search=search_query).order_by('-rank')
+            # results = Post.published.annotate(search=search_vector,
+            #                                   rank=SearchRank(search_vector, search_query)).filter(
+            #     search=search_query).order_by('-rank')
+            results_1 = Post.published.annotate(similarity=TrigramSimilarity('title', query)).filter(
+                similarity__gte=0.1).order_by('-similarity')
+            results_2 = Post.published.annotate(similarity=TrigramSimilarity('description', query)).filter(
+                similarity__gte=0.1).order_by('-similarity')
+            results = (results_1 | results_2).order_by('-similarity')
 
     context = {
         'query': query,
