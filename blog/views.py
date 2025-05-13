@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from .models import *
 from .forms import *
@@ -130,6 +131,7 @@ def post_search(request):
     return render(request, "blog/search.html", context)
 
 
+@login_required
 def profile(request):
     user = request.user
     posts = Post.published.filter(author=user)
@@ -140,7 +142,7 @@ def profile(request):
     }
     return render(request, "blog/profile.html", context)
 
-
+@login_required()
 def create_post(request):
     if request.method == 'POST':
         form = CreatePostForm(request.POST, request.FILES)
@@ -159,7 +161,7 @@ def create_post(request):
     }
     return render(request, 'forms/create-post.html', context)
 
-
+@login_required()
 def delete_post(request, pk):
     post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
     if request.method == 'POST':
@@ -171,7 +173,7 @@ def delete_post(request, pk):
     }
     return render(request, 'forms/delete-post.html', context)
 
-
+@login_required()
 def edit_post(request, pk):
     post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
     if request.method == 'POST':
@@ -192,30 +194,34 @@ def edit_post(request, pk):
     }
     return render(request, 'forms/create-post.html', context)
 
-
+@login_required()
 def delete_image(request, pk):
     image = get_object_or_404(Image, id=pk)
     image.delete()
     return redirect('blog:profile')
 
+# def user_login(request):
+#     if request == 'POST':
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+#             if user is not None:
+#                 if user.is_active:
+#                     login(request, user)
+#                     return HttpResponse("logged in")
+#                 else:
+#                     return HttpResponse("not active")
+#             else:
+#                 return HttpResponse("user does not exist")
+#     else:
+#         form = LoginForm()
+#
+#     context = {
+#         'form': form
+#     }
+#     return render(request, "registration/login.html", context)
+#
 
-def user_login(request):
-    if request == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return HttpResponse("logged in")
-                else:
-                    return HttpResponse("not active")
-            else:
-                return HttpResponse("user does not exist")
-    else:
-        form = LoginForm()
-
-    context = {
-        'form': form
-    }
-    return render(request, "registration/login.html", context)
+# def log_out(request):
+#     logout(request)
+#     return redirect(request.META.get('HTTP_REFERER'))
