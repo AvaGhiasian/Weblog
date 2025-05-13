@@ -1,10 +1,11 @@
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
 from django.db.models import Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
+from django.contrib.auth import authenticate, login, logout
 
 from .models import *
 from .forms import *
@@ -196,3 +197,25 @@ def delete_image(request, pk):
     image = get_object_or_404(Image, id=pk)
     image.delete()
     return redirect('blog:profile')
+
+
+def user_login(request):
+    if request == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponse("logged in")
+                else:
+                    return HttpResponse("not active")
+            else:
+                return HttpResponse("user does not exist")
+    else:
+        form = LoginForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, "registration/login.html", context)
