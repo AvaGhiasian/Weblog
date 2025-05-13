@@ -11,4 +11,10 @@ urlpatterns = [
     path('posts/<int:pk>/comment/', views.post_comment, name='post_comment'),
     path('tickets/', views.ticket, name='ticket_list'),
     path('search/', views.post_search, name='post_search'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/create-post/', views.create_post, name='create_post'),
+    path('profile/create-post/<int:pk>/', views.edit_post, name='edit_post'),
+    path('profile/delete-post/<int:pk>/', views.delete_post, name='delete_post'),
+    path('profile/delete-image/<int:pk>/', views.delete_image, name='delete_image'),
+
 ]

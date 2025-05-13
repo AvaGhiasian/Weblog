@@ -127,3 +127,72 @@ def post_search(request):
         'results': results,
     }
     return render(request, "blog/search.html", context)
+
+
+def profile(request):
+    user = request.user
+    posts = Post.published.filter(author=user)
+
+    context = {
+        'user': user,
+        'posts': posts,
+    }
+    return render(request, "blog/profile.html", context)
+
+
+def create_post(request):
+    if request.method == 'POST':
+        form = CreatePostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            Image.objects.create(image_file=form.cleaned_data['image1'], post=post)
+            Image.objects.create(image_file=form.cleaned_data['image2'], post=post)
+            return redirect('blog:profile')
+    else:
+        form = CreatePostForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'forms/create-post.html', context)
+
+
+def delete_post(request, pk):
+    post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
+    if request.method == 'POST':
+        post.delete()
+        return redirect('blog:profile')
+
+    context = {
+        'post': post,
+    }
+    return render(request, 'forms/delete-post.html', context)
+
+
+def edit_post(request, pk):
+    post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
+    if request.method == 'POST':
+        form = CommentForm(request.POST, request.Files, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            Image.objects.create(image_file=form.cleaned_data['image1'], post=post)
+            Image.objects.create(image_file=form.cleaned_data['image2'], post=post)
+            return redirect('blog:profile')
+    else:
+        form = CreatePostForm()
+
+    context = {
+        'form': form,
+        'post': post,
+    }
+    return render(request, 'forms/create-post.html', context)
+
+
+def delete_image(request, pk):
+    image = get_object_or_404(Image, id=pk)
+    image.delete()
+    return redirect('blog:profile')
