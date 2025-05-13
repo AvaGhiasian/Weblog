@@ -26,11 +26,12 @@
 
     <div>
         {% for comment in comments %}
-            {{ comment.body|linebreaks }}
-            <br>
-            {{ comment.name }}
-            {% empty %}
-                کامنتی وجود ندارد
+            <div class="comment">
+                {{ comment.body|linebreaks }}
+                <span class="comment-name">{{ comment.name }}</span>
+            </div>
+                {% empty %}
+                    کامنتی وجود ندارد
         {% endfor %}
     </div>
 
@@ -40,3 +41,4 @@
             <input type="submit" value="افزودن کامنت">
     </form>
 {% endblock %}
+

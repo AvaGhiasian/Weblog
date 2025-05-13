@@ -4,10 +4,12 @@
 {% block title %}post list{% endblock %}
 
 {% block content %}
-    <h2>آمار</h2>
-    <p> تعداد پست: {% total_posts %}</p>
-    <p> تعداد کامنت ها: {% total_comments %}</p>
-    <p> تاریخ آخرین پست: {% latest_post_date %}</p>
+    <div class="container">
+        <h2>آمار</h2>
+        <p> تعداد پست: {% total_posts %}</p>
+        <p> تعداد کامنت ها: {% total_comments %}</p>
+        <p> تاریخ آخرین پست: {% latest_post_date %}</p>
+    </div>
 
     {% latest_posts %}
 
