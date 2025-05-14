@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 
 from blog.models import *
@@ -62,6 +63,33 @@ class CreatePostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'description', 'reading_time']
 
+
 # class LoginForm(forms.Form):
 #     username = forms.CharField(max_length=250, required=True)
 #     password = forms.CharField(max_length=250, required=True, widget=forms.PasswordInput)
+
+
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(max_length=20, widget=forms.PasswordInput, label='password')
+    password_2 = forms.CharField(max_length=20, widget=forms.PasswordInput, label='repeat password')
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+    def clean_password_2(self):
+        if self.cleaned_data['password'] != self.cleaned_data['password_2']:
+            raise forms.ValidationError('پسوردها مطابقت ندارند!')
+        return self.cleaned_data['password_2']
+
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+
+class AccountEditForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['date_of_birth', 'bio', 'job', 'photo']

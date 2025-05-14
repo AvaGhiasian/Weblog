@@ -133,3 +133,19 @@ class Image(models.Model):
 
     def __str__(self):
         return self.title if self.title else "None"
+
+
+class Account(models.Model):
+    user = models.OneToOneField(User, related_name="account", on_delete=models.CASCADE)
+    date_of_birth = jmodels.jDateField(verbose_name="تاریخ تولد", blank=True, null=True)
+    bio = models.TextField(verbose_name="بایو", null=True, blank=True)
+    photo = ResizedImageField(verbose_name="تصویر", upload_to="account_images/", size=[500, 500], quality=60,
+                              crop=['middle', 'center'], blank=True, null=True)
+    job = models.CharField(max_length=250, verbose_name="شغل", null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name = "اکانت"
+        verbose_name_plural = "اکانت ها"

@@ -838,3 +838,111 @@ section.py-4 {
     background-color: #c82333;
     border-color: #bd2130;
 }
+
+/* profile */
+
+/* General Page Styling */
+body {
+    background-color: #f7f9fc;
+    font-family: 'Vazirmatn', sans-serif;
+    color: #333;
+}
+
+/* Section Padding */
+section.py-4 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Card Styling */
+.card.card-body {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    transition: box-shadow 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.card.card-body:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Titles and Headers */
+h1.h3 {
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #0d6efd;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+}
+
+/* User Menu Icons */
+.card .fs-5 a {
+    color: #198754;
+    font-weight: 500;
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s ease;
+}
+
+.card .fs-5 a:hover {
+    color: #0f5132;
+}
+
+/* Table */
+.table {
+    background-color: #fff;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Status Badge */
+.badge.bg-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+/* Back to Top */
+.back-top {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background-color: #198754;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    z-index: 1000;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+}
+
+.back-top:hover {
+    background-color: #145c44;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card.card-body {
+        margin-bottom: 1rem;
+    }
+}

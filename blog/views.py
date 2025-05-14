@@ -142,6 +142,7 @@ def profile(request):
     }
     return render(request, "blog/profile.html", context)
 
+
 @login_required()
 def create_post(request):
     if request.method == 'POST':
@@ -161,6 +162,7 @@ def create_post(request):
     }
     return render(request, 'forms/create-post.html', context)
 
+
 @login_required()
 def delete_post(request, pk):
     post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
@@ -172,6 +174,7 @@ def delete_post(request, pk):
         'post': post,
     }
     return render(request, 'forms/delete-post.html', context)
+
 
 @login_required()
 def edit_post(request, pk):
@@ -194,11 +197,13 @@ def edit_post(request, pk):
     }
     return render(request, 'forms/create-post.html', context)
 
+
 @login_required()
 def delete_image(request, pk):
     image = get_object_or_404(Image, id=pk)
     image.delete()
     return redirect('blog:profile')
+
 
 # def user_login(request):
 #     if request == 'POST':
@@ -222,6 +227,40 @@ def delete_image(request, pk):
 #     return render(request, "registration/login.html", context)
 #
 
-# def log_out(request):
-#     logout(request)
-#     return redirect(request.META.get('HTTP_REFERER'))
+def log_out(request):
+    logout(request)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            Account.objects.create(user=user)
+            return render(request, 'registration/register_done.html', {'user': user})
+    else:
+        form = UserRegistrationForm()
+
+    return render(request, 'registration/register.html', {'form': form})
+
+
+@login_required()
+def edit_account(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(request.POST, instance=request.user)
+        account_form = AccountEditForm(request.post, instance=request.user.account, files=request.FILES)
+        if account_form.is_valid() and user_form.is_valid():
+            account_form.save()
+            user_form.save()
+    else:
+        user_form = UserEditForm(instance=request.user)
+        account_form = AccountEditForm(instance=request.user.account)
+
+    context = {
+        'user_form': user_form,
+        'account_form': account_form,
+    }
+    return render(request, "registration/edit_account.html", context)
