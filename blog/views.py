@@ -75,7 +75,7 @@ def ticket(request):
             Ticket.objects.create(message=cleaned_data['message'], name=cleaned_data['name'],
                                   email=cleaned_data['email'],
                                   phone=cleaned_data['phone'], subject=cleaned_data['subject'])
-            return redirect('blog:ticket')
+            return redirect('blog:ticket_list')
     else:
         form = TicketForm()
 
@@ -183,7 +183,7 @@ def delete_post(request, pk):
 def edit_post(request, pk):
     post = get_object_or_404(Post, id=pk, status=Post.Status.PUBLISHED)
     if request.method == 'POST':
-        form = CommentForm(request.POST, request.Files, instance=post)
+        form = CreatePostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
