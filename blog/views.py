@@ -23,28 +23,31 @@ def index(request):
     return render(request, 'blog/index.html')
 
 
-# def post_list(request, category=None):
-#     posts = Post.published.all()
-#     paginator = Paginator(posts, 5)
-#     page_number = request.GET.get('page', 1)
-#     try:
-#         posts = paginator.page(page_number)
-#     except EmptyPage:
-#         posts = paginator.page(paginator.num_pages)  # shows the last page
-#     except PageNotAnInteger:
-#         posts = paginator.page(1)
-#
-#     context = {
-#         'posts': posts,
-#     }
-#     return render(request, "blog/list.html", context)
+def post_list(request, category=None):
+    if category is not None:
+        posts = Post.published.filter(category=category)
+    posts = Post.published.all()
+    paginator = Paginator(posts, 5)
+    page_number = request.GET.get('page', 1)
+    try:
+        posts = paginator.page(page_number)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)  # shows the last page
+    except PageNotAnInteger:
+        posts = paginator.page(1)
 
-class PostListView(ListView):
-    # model = Post  by default takes Post.objects.all()
-    queryset = Post.published.all()
-    context_object_name = 'posts'
-    paginate_by = 5
-    template_name = "blog/list.html"
+    context = {
+        'posts': posts,
+        'category': category,
+    }
+    return render(request, "blog/list.html", context)
+
+# class PostListView(ListView):
+#     # model = Post  by default takes Post.objects.all()
+#     queryset = Post.published.all()
+#     context_object_name = 'posts'
+#     paginate_by = 5
+#     template_name = "blog/list.html"
 
 
 def post_detail(request, pk):
